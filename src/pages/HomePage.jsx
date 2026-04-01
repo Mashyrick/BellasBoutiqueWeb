@@ -112,7 +112,7 @@ export default function HomePage() {
           icon={Package}
           badge="Catálogo"
           title="Explora prendas, calzado y accesorios"
-          subtitle="Bellas Boutique"
+          subtitle="Bellas Boutique ofrece una cuidada selección de moda femenina con presencia boutique, composición editorial y compra clara."
         />
 
         <div className="page-card space-y-5">
