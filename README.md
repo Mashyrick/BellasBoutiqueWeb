@@ -12,10 +12,12 @@ Proyecto base en React + Vite + Tailwind CSS para una tienda online con:
 ## Usuarios de prueba
 
 ### Administrador
+
 - Correo: `admin@bellasboutique.com`
 - Contraseña: `Admin123!`
 
 ### Cliente
+
 - Correo: `cliente@bellasboutique.com`
 - Contraseña: `Cliente123!`
 
@@ -33,13 +35,14 @@ npm run dev
 - `src/context`: estado global
 - `src/data`: datos simulados
 
-## Recomendación para el proyecto universitario
+## Recomendación para práctoca de otros desarrolladores
 
 Cambien:
+
 - colores
 - textos
 - nombre visual de algunas secciones
 - imágenes
 - distribución pequeña de componentes
 
-Así lo usarán como base profesional sin que quede idéntico.
+Así lo usarán como base profesional mientras aprenden los conceptos.
