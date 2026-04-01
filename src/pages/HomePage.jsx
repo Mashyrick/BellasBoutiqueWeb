@@ -112,7 +112,7 @@ export default function HomePage() {
           icon={Package}
           badge="Catálogo"
           title="Explora prendas, calzado y accesorios"
-          subtitle="Organicé filtros y tarjetas dentro de una misma familia visual para que el catálogo se sienta consistente con el hero, el navbar y el resto del sistema."
+          subtitle="Bellas Boutique"
         />
 
         <div className="page-card space-y-5">
@@ -244,7 +244,11 @@ export default function HomePage() {
         {filteredProducts.length ? (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} onAdd={addToCart} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAdd={addToCart}
+              />
             ))}
           </div>
         ) : (

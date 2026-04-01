@@ -33,12 +33,12 @@ export default function Hero() {
 
               <div className="max-w-4xl space-y-4">
                 <h2 className="max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight text-[color:var(--bb-text)] sm:text-5xl lg:text-6xl">
-                  Moda femenina con presencia boutique, composición editorial y compra clara.
+                  Moda femenina con presencia boutique, composición editorial y
+                  compra clara.
                 </h2>
                 <p className="max-w-2xl text-sm leading-7 text-[color:var(--bb-text-soft)] sm:text-base">
-                  Reorganicé la dirección visual hacia una interfaz más refinada: menos ruido,
-                  mejor jerarquía, más aire entre bloques y un dark mode que sí se siente
-                  intencional en vez de improvisado.
+                  Descubre nuestra nueva colección diseñada para destacar en
+                  cada detalle.
                 </p>
               </div>
             </div>
@@ -75,11 +75,15 @@ export default function Hero() {
               <p className="eyebrow">Acceso demo</p>
               <div className="mt-4 space-y-3 text-sm text-[color:var(--bb-text-soft)]">
                 <p>
-                  <span className="font-semibold text-[color:var(--bb-text)]">Admin:</span>{" "}
+                  <span className="font-semibold text-[color:var(--bb-text)]">
+                    Admin:
+                  </span>{" "}
                   admin@bellasboutique.com / Admin123!
                 </p>
                 <p>
-                  <span className="font-semibold text-[color:var(--bb-text)]">Cliente:</span>{" "}
+                  <span className="font-semibold text-[color:var(--bb-text)]">
+                    Cliente:
+                  </span>{" "}
                   cliente@bellasboutique.com / Cliente123!
                 </p>
               </div>
@@ -89,7 +93,10 @@ export default function Hero() {
               <p className="eyebrow">Valor de la experiencia</p>
               <ul className="mt-4 space-y-3">
                 {serviceNotes.map(({ icon: Icon, text }) => (
-                  <li key={text} className="flex items-start gap-3 text-sm text-[color:var(--bb-text-soft)]">
+                  <li
+                    key={text}
+                    className="flex items-start gap-3 text-sm text-[color:var(--bb-text-soft)]"
+                  >
                     <span className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-[rgba(42,29,28,0.08)] text-[color:var(--bb-text)] dark:bg-white/[0.05]">
                       <Icon className="h-4 w-4" />
                     </span>
