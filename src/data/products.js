@@ -1,62 +1,132 @@
 export const initialProducts = [
   {
-    id: 1,
-    name: 'Vestido Floral Elegante',
-    category: 'Ropa',
+    id: 101,
+    name: "Blusa Floral Elegance",
+    description:
+      "Blusa fresca de tela ligera con estampado floral, ideal para un look casual y elegante.",
     price: 18990,
-    stock: 8,
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80',
-    description: 'Vestido fresco y elegante ideal para ocasiones especiales.',
-    provider: 'Moda CR',
-  },
-  {
-    id: 2,
-    name: 'Tacones Nude Premium',
-    category: 'Calzado',
-    price: 24990,
-    stock: 5,
-    image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=900&q=80',
-    description: 'Tacones cómodos con acabado premium para eventos y oficina.',
-    provider: 'Step Fashion',
-  },
-  {
-    id: 3,
-    name: 'Bolso Beige Clásico',
-    category: 'Accesorios',
-    price: 15990,
     stock: 12,
-    image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=900&q=80',
-    description: 'Bolso elegante con gran espacio interno y diseño moderno.',
-    provider: 'Bags House',
+    category: "Ropa",
+    provider: "Moda CR",
+    image:
+      "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80",
+    status: "activo",
   },
   {
-    id: 4,
-    name: 'Blusa Blanca Casual',
-    category: 'Ropa',
-    price: 12990,
-    stock: 9,
-    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=80',
-    description: 'Blusa ligera y versátil para uso diario.',
-    provider: 'Moda CR',
-  },
-  {
-    id: 5,
-    name: 'Sandalias Doradas',
-    category: 'Calzado',
-    price: 19990,
+    id: 102,
+    name: "Vestido Beige Classic",
+    description:
+      "Vestido midi en tono beige con acabado suave y caída elegante para ocasiones especiales.",
+    price: 32990,
     stock: 7,
-    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80',
-    description: 'Sandalias con estilo sofisticado y gran comodidad.',
-    provider: 'Step Fashion',
+    category: "Ropa",
+    provider: "Boutique Central",
+    image:
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
+    status: "activo",
   },
   {
-    id: 6,
-    name: 'Aretes Perla Minimalistas',
-    category: 'Accesorios',
-    price: 7990,
+    id: 103,
+    name: "Tacones Nude Signature",
+    description:
+      "Tacones modernos de acabado nude, cómodos y versátiles para oficina o eventos.",
+    price: 27990,
+    stock: 5,
+    category: "Calzado",
+    provider: "Step Style",
+    image:
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=900&q=80",
+    status: "activo",
+  },
+  {
+    id: 104,
+    name: "Bolso Rosa Premium",
+    description:
+      "Bolso estructurado con gran capacidad, herrajes elegantes y acabado premium.",
+    price: 24990,
+    stock: 9,
+    category: "Accesorios",
+    provider: "Accesorios Nova",
+    image:
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=900&q=80",
+    status: "activo",
+  },
+  {
+    id: 105,
+    name: "Sandalias Urban Soft",
+    description:
+      "Sandalias cómodas y ligeras, perfectas para uso diario con estilo relajado.",
+    price: 15990,
+    stock: 14,
+    category: "Calzado",
+    provider: "Step Style",
+    image:
+      "https://images.unsplash.com/photo-1562273138-f46be4ebdf33?auto=format&fit=crop&w=900&q=80",
+    status: "activo",
+  },
+  {
+    id: 106,
+    name: "Collar Dorado Minimal",
+    description:
+      "Accesorio delicado con diseño minimalista que complementa outfits casuales y formales.",
+    price: 8990,
+    stock: 20,
+    category: "Accesorios",
+    provider: "Luna Accents",
+    image:
+      "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=900&q=80",
+    status: "activo",
+  },
+  {
+    id: 107,
+    name: "Chaqueta Denim Soft Blue",
+    description:
+      "Chaqueta denim de corte moderno, ideal para combinar con vestidos o jeans.",
+    price: 34990,
+    stock: 4,
+    category: "Ropa",
+    provider: "Moda CR",
+    image:
+      "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=900&q=80",
+    status: "activo",
+  },
+  {
+    id: 108,
+    name: "Tenis Casual White Motion",
+    description:
+      "Tenis blancos de diseño limpio y moderno, cómodos para largas jornadas.",
+    price: 29990,
+    stock: 8,
+    category: "Calzado",
+    provider: "Urban Walk",
+    image:
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80",
+    status: "activo",
+  },
+  {
+    id: 109,
+    name: "Aretes Brillo Crystal",
+    description:
+      "Aretes con acabado brillante para eventos, cenas o detalles elegantes.",
+    price: 6990,
     stock: 16,
-    image: 'https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=80',
-    description: 'Accesorio delicado para complementar cualquier look.',
-    provider: 'Shine Accesorios',
+    category: "Accesorios",
+    provider: "Luna Accents",
+    image:
+      "https://images.unsplash.com/photo-1611085583191-a3b181a88401?auto=format&fit=crop&w=900&q=80",
+    status: "activo",
+  },
+  {
+    id: 110,
+    name: "Falda Negra Essential",
+    description:
+      "Falda clásica de tono negro, combinable con blusas y chaquetas para múltiples ocasiones.",
+    price: 17990,
+    stock: 0,
+    category: "Ropa",
+    provider: "Boutique Central",
+    image:
+      "https://images.unsplash.com/photo-1583496661160-fb5886a13d77?auto=format&fit=crop&w=900&q=80",
+    status: "activo",
   },
 ];

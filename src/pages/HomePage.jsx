@@ -3,6 +3,7 @@ import {
   Filter,
   Package,
   Search,
+  ShieldCheck,
   SlidersHorizontal,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -36,7 +37,7 @@ const matchesPriceRange = (price, range) => {
 };
 
 export default function HomePage() {
-  const { products, categories, addToCart } = useApp();
+  const { products, categories, addToCart, currentUser } = useApp();
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState("all");
@@ -62,7 +63,7 @@ export default function HomePage() {
   };
 
   const filteredProducts = useMemo(() => {
-    const term = search.toLowerCase();
+    const term = search.toLowerCase().trim();
 
     const filtered = products.filter((product) => {
       const matchCategory =
@@ -72,7 +73,8 @@ export default function HomePage() {
       const matchSearch =
         product.name.toLowerCase().includes(term) ||
         product.description.toLowerCase().includes(term) ||
-        product.provider.toLowerCase().includes(term);
+        product.provider.toLowerCase().includes(term) ||
+        product.category.toLowerCase().includes(term);
 
       const matchPrice = matchesPriceRange(product.price, priceRange);
 
@@ -103,6 +105,9 @@ export default function HomePage() {
     (availability !== "all" ? 1 : 0) +
     (search ? 1 : 0);
 
+  const isAdminView =
+    currentUser && ["admin", "vendedor"].includes(currentUser.role);
+
   return (
     <div className="page-section">
       <Hero />
@@ -110,9 +115,9 @@ export default function HomePage() {
       <section id="catalogo" className="page-section">
         <SectionHeader
           icon={Package}
-          badge="Catálogo"
-          title="Explora prendas, calzado y accesorios"
-          subtitle="Bellas Boutique ofrece una cuidada selección de moda femenina con presencia boutique, composición editorial y compra clara."
+          badge="Catálogo de productos"
+          title="Explora ropa, calzado y accesorios"
+          subtitle="Consulta nombre, descripción, precio, categoría, proveedor, imagen y stock disponible. También puedes filtrar por categoría y disponibilidad."
         />
 
         <div className="page-card space-y-5">
@@ -126,7 +131,7 @@ export default function HomePage() {
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Buscar por nombre, descripción o proveedor"
+                  placeholder="Buscar por nombre, descripción, categoría o proveedor"
                   className="input-field pl-11"
                 />
               </div>
@@ -221,46 +226,74 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="surface-muted flex flex-wrap items-center justify-between gap-3 px-4 py-4">
-            <div>
-              <p className="text-sm font-semibold text-[color:var(--bb-text)]">
-                {filteredProducts.length} producto
-                {filteredProducts.length === 1 ? "" : "s"} encontrado
-                {filteredProducts.length === 1 ? "" : "s"}
-              </p>
-              <p className="mt-1 text-sm text-[color:var(--bb-text-soft)]">
-                {activeFilterCount === 0
-                  ? "Sin filtros activos."
-                  : `Filtros activos: ${activeFilterCount}`}
-              </p>
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-[rgba(118,92,76,0.12)] bg-white/45 px-4 py-4 dark:bg-white/[0.03]">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-[color:var(--bb-text-soft)]">
+              <span className="badge-soft">
+                {filteredProducts.length} productos
+              </span>
+              {activeFilterCount ? (
+                <span className="badge-soft">
+                  {activeFilterCount} filtros activos
+                </span>
+              ) : null}
+              {isAdminView ? (
+                <span className="badge-soft">
+                  Vista administrativa detectada
+                </span>
+              ) : null}
             </div>
 
-            <button onClick={clearFilters} className="btn-secondary">
-              Limpiar filtros
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <button onClick={clearFilters} className="btn-secondary">
+                Limpiar filtros
+              </button>
+            </div>
           </div>
-        </div>
 
-        {filteredProducts.length ? (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAdd={addToCart}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="page-card text-center">
-            <p className="text-lg font-semibold text-[color:var(--bb-text)]">
-              No se encontraron productos con esos filtros.
-            </p>
-            <p className="mt-2 text-sm text-[color:var(--bb-text-soft)]">
-              Prueba limpiando los filtros o cambiando la búsqueda.
-            </p>
-          </div>
-        )}
+          {!currentUser ? (
+            <div className="rounded-3xl border border-[rgba(118,92,76,0.12)] bg-[rgba(42,29,28,0.92)] p-4 text-sm text-white">
+              Debes iniciar sesión como cliente para agregar productos al
+              carrito.
+            </div>
+          ) : null}
+
+          {isAdminView ? (
+            <div className="rounded-3xl border border-[rgba(118,92,76,0.12)] bg-white/50 p-4 text-sm text-[color:var(--bb-text-soft)] dark:bg-white/[0.03]">
+              Como{" "}
+              <strong className="text-[color:var(--bb-text)]">
+                administrador o vendedor
+              </strong>
+              , puedes revisar el catálogo, pero las compras están reservadas
+              para clientes.
+            </div>
+          ) : null}
+
+          {filteredProducts.length ? (
+            <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAdd={addToCart}
+                  disablePurchase={isAdminView}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="surface-muted p-10 text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(42,29,28,0.08)] dark:bg-white/[0.05]">
+                <ShieldCheck className="h-7 w-7 text-[color:var(--bb-text-soft)]" />
+              </div>
+              <p className="text-lg font-semibold text-[color:var(--bb-text)]">
+                No encontramos productos con esos filtros.
+              </p>
+              <p className="mt-2 text-sm text-[color:var(--bb-text-soft)]">
+                Prueba cambiando la categoría, el rango de precio o el criterio
+                de búsqueda.
+              </p>
+            </div>
+          )}
+        </div>
       </section>
     </div>
   );

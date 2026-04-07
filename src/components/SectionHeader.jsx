@@ -1,15 +1,29 @@
-export default function SectionHeader({ icon: Icon, title, subtitle, badge }) {
+export default function SectionHeader({ icon: Icon, badge, title, subtitle }) {
   return (
-    <div className="mb-6 flex items-start gap-4">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[rgba(118,92,76,0.14)] bg-white/55 text-[color:var(--bb-text)] shadow-[0_12px_28px_rgba(32,26,24,0.06)] backdrop-blur-xl dark:bg-white/[0.04]">
-        <Icon className="h-5 w-5" />
+    <div className="mb-6">
+      <div className="flex items-center gap-3 mb-2">
+        {Icon && (
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-black/5 dark:bg-white/10">
+            <Icon className="w-5 h-5" />
+          </div>
+        )}
+
+        {badge && (
+          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-black/5 dark:bg-white/10">
+            {badge}
+          </span>
+        )}
       </div>
 
-      <div className="min-w-0">
-        {badge ? <p className="eyebrow mb-2">{badge}</p> : null}
-        <h2 className="section-title">{title}</h2>
-        <p className="section-subtitle mt-2">{subtitle}</p>
-      </div>
+      <h2 className="text-2xl font-bold text-[color:var(--bb-text)]">
+        {title}
+      </h2>
+
+      {subtitle && (
+        <p className="mt-1 text-sm text-[color:var(--bb-text-soft)]">
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 }

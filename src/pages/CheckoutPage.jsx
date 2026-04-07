@@ -1,4 +1,5 @@
-import { CreditCard } from "lucide-react";
+import { CreditCard, Landmark, Smartphone } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InputField from "../components/InputField";
 import SectionHeader from "../components/SectionHeader";
@@ -7,78 +8,169 @@ import { currency } from "../utils";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
-  const { checkoutForm, setCheckoutForm, subtotal, tax, total, processCheckout } =
-    useApp();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const success = processCheckout();
-    if (success) navigate("/invoice");
+  const { cart, subtotal, tax, total, checkout, currentUser } = useApp();
+
+  const [method, setMethod] = useState("tarjeta");
+
+  const [form, setForm] = useState({
+    cardNumber: "",
+    cardName: "",
+    sinpe: "",
+    bankRef: "",
+    address: currentUser?.address || "",
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const success = checkout({
+      method,
+      ...form,
+    });
+
+    if (success) {
+      navigate("/invoice");
+    }
   };
 
+  if (!cart.length) {
+    return (
+      <div className="page-card text-center">
+        Tu carrito está vacío. Agrega productos antes de continuar.
+      </div>
+    );
+  }
+
   return (
-    <div className="mx-auto max-w-4xl page-card">
-      <SectionHeader
-        icon={CreditCard}
-        badge="Pago"
-        title="Checkout y pago"
-        subtitle="Simulación del proceso de pago con dirección de entrega, método y resumen financiero dentro del mismo sistema visual."
-      />
-      <form onSubmit={handleSubmit} className="grid gap-5 md:grid-cols-2">
-        <label className="block space-y-2 md:col-span-2">
-          <span className="text-sm font-medium text-[color:var(--bb-text)]">
-            Método de pago
-          </span>
-          <select
-            value={checkoutForm.method}
-            onChange={(e) => setCheckoutForm({ ...checkoutForm, method: e.target.value })}
-            className="input-field"
-          >
-            <option>Tarjeta</option>
-            <option>SINPE</option>
-            <option>Transferencia</option>
-          </select>
-        </label>
-        <InputField
-          label="Nombre del titular"
-          value={checkoutForm.cardName}
-          onChange={(e) => setCheckoutForm({ ...checkoutForm, cardName: e.target.value })}
-          placeholder="Nombre del titular"
+    <div className="mx-auto max-w-6xl grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <section className="page-card">
+        <SectionHeader
+          icon={CreditCard}
+          badge="Checkout"
+          title="Proceso de pago"
+          subtitle="Selecciona un método de pago, completa los datos y genera la factura."
         />
-        <InputField
-          label="Número de referencia / tarjeta"
-          value={checkoutForm.cardNumber}
-          onChange={(e) => setCheckoutForm({ ...checkoutForm, cardNumber: e.target.value })}
-          placeholder="0000 0000 0000 0000"
-        />
-        <div className="md:col-span-2">
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* MÉTODOS DE PAGO */}
+          <div className="grid gap-3 md:grid-cols-3">
+            <button
+              type="button"
+              onClick={() => setMethod("tarjeta")}
+              className={`btn-secondary ${
+                method === "tarjeta" ? "ring-2 ring-black" : ""
+              }`}
+            >
+              <CreditCard className="h-4 w-4" />
+              Tarjeta
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMethod("sinpe")}
+              className={`btn-secondary ${
+                method === "sinpe" ? "ring-2 ring-black" : ""
+              }`}
+            >
+              <Smartphone className="h-4 w-4" />
+              SINPE
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMethod("transferencia")}
+              className={`btn-secondary ${
+                method === "transferencia" ? "ring-2 ring-black" : ""
+              }`}
+            >
+              <Landmark className="h-4 w-4" />
+              Transferencia
+            </button>
+          </div>
+
+          {/* FORMULARIOS SEGÚN MÉTODO */}
+          {method === "tarjeta" && (
+            <div className="grid gap-4 md:grid-cols-2">
+              <InputField
+                label="Número de tarjeta"
+                value={form.cardNumber}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, cardNumber: e.target.value }))
+                }
+              />
+
+              <InputField
+                label="Nombre en tarjeta"
+                value={form.cardName}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, cardName: e.target.value }))
+                }
+              />
+            </div>
+          )}
+
+          {method === "sinpe" && (
+            <InputField
+              label="Número SINPE"
+              value={form.sinpe}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, sinpe: e.target.value }))
+              }
+            />
+          )}
+
+          {method === "transferencia" && (
+            <InputField
+              label="Número de referencia bancaria"
+              value={form.bankRef}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, bankRef: e.target.value }))
+              }
+            />
+          )}
+
+          {/* DIRECCIÓN */}
           <InputField
             label="Dirección de entrega"
-            value={checkoutForm.deliveryAddress}
+            value={form.address}
             onChange={(e) =>
-              setCheckoutForm({ ...checkoutForm, deliveryAddress: e.target.value })
+              setForm((p) => ({ ...p, address: e.target.value }))
             }
-            placeholder="Dirección completa"
           />
-        </div>
-        <div className="md:col-span-2 surface-muted grid gap-3 p-5 text-sm text-[color:var(--bb-text-soft)]">
-          <div className="flex items-center justify-between">
+
+          <button className="btn-primary w-full">
+            Confirmar pago y generar factura
+          </button>
+        </form>
+      </section>
+
+      {/* RESUMEN */}
+      <aside className="page-card">
+        <SectionHeader
+          icon={CreditCard}
+          badge="Resumen"
+          title="Detalle de pago"
+          subtitle="Revisa el total antes de confirmar."
+        />
+
+        <div className="surface-muted p-5 space-y-3 text-sm">
+          <div className="flex justify-between">
             <span>Subtotal</span>
-            <strong className="text-[color:var(--bb-text)]">{currency(subtotal)}</strong>
+            <strong>{currency(subtotal)}</strong>
           </div>
-          <div className="flex items-center justify-between">
-            <span>IVA</span>
-            <strong className="text-[color:var(--bb-text)]">{currency(tax)}</strong>
+
+          <div className="flex justify-between">
+            <span>IVA (13%)</span>
+            <strong>{currency(tax)}</strong>
           </div>
-          <div className="flex items-center justify-between text-base font-semibold text-[color:var(--bb-text)]">
+
+          <div className="flex justify-between text-lg font-semibold">
             <span>Total</span>
             <strong>{currency(total)}</strong>
           </div>
         </div>
-        <div className="md:col-span-2">
-          <button className="btn-primary w-full">Confirmar compra</button>
-        </div>
-      </form>
+      </aside>
     </div>
   );
 }

@@ -1,168 +1,174 @@
-import {
-  CreditCard,
-  Minus,
-  Plus,
-  ShoppingCart,
-  Trash,
-  Trash2,
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import SectionHeader from "../components/SectionHeader";
 import { useApp } from "../context/AppContext";
 import { currency } from "../utils";
 
 export default function CartPage() {
-  const navigate = useNavigate();
   const {
     cart,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
     subtotal,
     tax,
     total,
-    updateQuantity,
-    clearCart,
-    removeFromCart,
   } = useApp();
 
-  const handleRemove = (item) => {
-    const confirmed = window.confirm(
-      `¿Seguro que deseas eliminar "${item.name}" del carrito?`,
-    );
-
-    if (confirmed) {
-      removeFromCart(item.id);
-    }
-  };
-
-  const handleClearCart = () => {
-    const confirmed = window.confirm("¿Deseas vaciar todo el carrito?");
-    if (confirmed) {
-      clearCart();
-    }
-  };
-
   return (
-    <div className="grid gap-6 lg:grid-cols-[1.3fr_0.8fr]">
-      <div className="page-card">
-        <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <SectionHeader
-            icon={ShoppingCart}
-            badge="Compra"
-            title="Carrito de compras"
-            subtitle="Ajusta cantidades, elimina productos y valida el resumen antes del pago."
-          />
+    <div className="mx-auto max-w-6xl grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+      <section className="page-card">
+        <SectionHeader
+          icon={ShoppingBag}
+          badge="Carrito de compras"
+          title="Productos seleccionados"
+          subtitle="El carrito está asociado al usuario actual y permite modificar cantidades antes de pasar al módulo de pago."
+        />
 
-          {cart.length ? (
-            <button onClick={handleClearCart} className="btn-danger self-start">
-              <Trash className="h-4 w-4" />
-              Vaciar carrito
-            </button>
-          ) : null}
-        </div>
-
-        {!cart.length ? (
-          <div className="surface-muted p-10 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(42,29,28,0.08)] dark:bg-white/[0.05]">
-              <ShoppingCart className="h-8 w-8 text-[color:var(--bb-text-soft)]" />
-            </div>
-            <p className="text-lg font-semibold text-[color:var(--bb-text)]">
-              Tu carrito está vacío.
-            </p>
-            <p className="mt-2 text-sm text-[color:var(--bb-text-soft)]">
-              Agrega productos desde el catálogo para verlos aquí.
-            </p>
-          </div>
-        ) : (
+        {cart.length ? (
           <div className="space-y-4">
             {cart.map((item) => (
-              <div
+              <article
                 key={item.id}
                 className="surface-muted flex flex-col gap-4 p-4 md:flex-row md:items-center"
               >
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="h-28 w-full rounded-[1.25rem] object-cover md:w-28"
+                  className="h-28 w-full rounded-2xl object-cover md:w-28"
                 />
+
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-[color:var(--bb-text)]">
                     {item.name}
                   </h3>
-                  <p className="text-sm text-[color:var(--bb-text-soft)]">
-                    {item.category}
-                  </p>
-                  <div className="mt-3 space-y-1 text-sm text-[color:var(--bb-text-soft)]">
-                    <p className="font-semibold text-[color:var(--bb-text)]">
-                      {currency(item.price)} c/u
-                    </p>
-                    <p>Subtotal: {currency(item.price * item.quantity)}</p>
-                    <p>Stock disponible: {item.stock}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => updateQuantity(item.id, "dec")}
-                    className="btn-secondary rounded-xl px-3 py-3"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </button>
-                  <span className="min-w-8 text-center text-sm font-bold text-[color:var(--bb-text)]">
-                    {item.quantity}
-                  </span>
-                  <button
-                    onClick={() => updateQuantity(item.id, "inc")}
-                    disabled={item.quantity >= item.stock}
-                    className="btn-secondary rounded-xl px-3 py-3 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </div>
-                <button
-                  onClick={() => handleRemove(item)}
-                  className="btn-secondary rounded-xl px-3 py-3 text-rose-700 dark:text-rose-300"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
 
-      <div className="page-card h-fit">
-        <SectionHeader
-          icon={CreditCard}
-          badge="Resumen"
-          title="Total de la compra"
-          subtitle="Subtotal, impuesto y monto final antes del checkout."
-        />
-        <div className="space-y-4 text-sm">
-          <div className="flex items-center justify-between text-[color:var(--bb-text-soft)]">
-            <span>Productos</span>
-            <span>{cart.reduce((acc, item) => acc + item.quantity, 0)}</span>
-          </div>
-          <div className="flex items-center justify-between text-[color:var(--bb-text-soft)]">
-            <span>Subtotal</span>
-            <span>{currency(subtotal)}</span>
-          </div>
-          <div className="flex items-center justify-between text-[color:var(--bb-text-soft)]">
-            <span>IVA 13%</span>
-            <span>{currency(tax)}</span>
-          </div>
-          <div className="surface-muted px-4 py-4">
-            <div className="flex items-center justify-between text-lg font-semibold text-[color:var(--bb-text)]">
-              <span>Total</span>
-              <span>{currency(total)}</span>
+                  <p className="mt-1 text-sm text-[color:var(--bb-text-soft)]">
+                    Categoría: {item.category} · Proveedor: {item.provider}
+                  </p>
+
+                  <p className="mt-1 text-sm text-[color:var(--bb-text-soft)]">
+                    Precio unitario: {currency(item.price)}
+                  </p>
+
+                  <p className="mt-1 text-sm text-[color:var(--bb-text-soft)]">
+                    Stock disponible: {item.stock}
+                  </p>
+
+                  <p className="mt-1 text-sm text-[color:var(--bb-text-soft)]">
+                    Subtotal: {currency(item.price * item.quantity)}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 md:items-end">
+                  <div className="inline-flex items-center gap-2 rounded-2xl border border-[rgba(118,92,76,0.14)] bg-white/60 px-3 py-2 dark:bg-white/[0.04]">
+                    <button
+                      onClick={() => updateQuantity(item.id, "dec")}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-black/5 transition hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </button>
+
+                    <span className="min-w-[32px] text-center text-sm font-semibold text-[color:var(--bb-text)]">
+                      {item.quantity}
+                    </span>
+
+                    <button
+                      onClick={() => updateQuantity(item.id, "inc")}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-black/5 transition hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="btn-danger"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Eliminar
+                  </button>
+                </div>
+              </article>
+            ))}
+
+            <div className="flex flex-wrap gap-3 pt-2">
+              <button onClick={clearCart} className="btn-secondary">
+                Vaciar carrito
+              </button>
+
+              <Link to="/checkout" className="btn-primary">
+                Continuar al pago
+              </Link>
             </div>
           </div>
-          <button
-            onClick={() => navigate("/checkout")}
-            disabled={!cart.length}
-            className="btn-primary w-full disabled:cursor-not-allowed disabled:bg-slate-300 dark:disabled:bg-slate-700 dark:disabled:text-slate-300"
-          >
-            Ir al pago
-          </button>
+        ) : (
+          <div className="surface-muted p-10 text-center">
+            <p className="text-lg font-semibold text-[color:var(--bb-text)]">
+              Tu carrito está vacío.
+            </p>
+            <p className="mt-2 text-sm text-[color:var(--bb-text-soft)]">
+              Agrega productos desde el catálogo para continuar con la compra.
+            </p>
+
+            <div className="mt-5">
+              <Link to="/" className="btn-primary">
+                Ir al catálogo
+              </Link>
+            </div>
+          </div>
+        )}
+      </section>
+
+      <aside className="page-card">
+        <SectionHeader
+          icon={ShoppingBag}
+          badge="Resumen de compra"
+          title="Totales del carrito"
+          subtitle="El sistema calcula subtotal, impuesto del 13% y total general antes de generar la factura."
+        />
+
+        <div className="surface-muted grid gap-4 p-5 text-sm text-[color:var(--bb-text-soft)]">
+          <div className="flex items-center justify-between">
+            <span>Productos diferentes</span>
+            <strong className="text-[color:var(--bb-text)]">
+              {cart.length}
+            </strong>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span>Subtotal</span>
+            <strong className="text-[color:var(--bb-text)]">
+              {currency(subtotal)}
+            </strong>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span>IVA (13%)</span>
+            <strong className="text-[color:var(--bb-text)]">
+              {currency(tax)}
+            </strong>
+          </div>
+
+          <div className="flex items-center justify-between text-base font-semibold text-[color:var(--bb-text)]">
+            <span>Total</span>
+            <strong>{currency(total)}</strong>
+          </div>
         </div>
-      </div>
+
+        <div className="mt-5 rounded-3xl border border-white/10 bg-white/5 p-4 text-sm leading-6 text-[color:var(--bb-text-soft)] dark:border-white/10 dark:bg-white/5">
+          Aquí puedes ajustar cantidades antes de confirmar la compra. El pago y
+          la factura se procesan en el siguiente módulo.
+        </div>
+
+        {cart.length ? (
+          <div className="mt-5">
+            <Link to="/checkout" className="btn-primary w-full justify-center">
+              Ir a checkout
+            </Link>
+          </div>
+        ) : null}
+      </aside>
     </div>
   );
 }

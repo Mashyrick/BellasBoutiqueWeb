@@ -5,6 +5,7 @@ import {
   LogIn,
   LogOut,
   Moon,
+  Receipt,
   ShoppingBag,
   Sun,
   UserPlus,
@@ -27,6 +28,7 @@ function NavItem({ to, icon: Icon, children, badge }) {
     >
       <Icon className="h-4 w-4" />
       <span>{children}</span>
+
       {badge ? (
         <span className="rounded-full bg-black/80 px-2 py-0.5 text-[11px] text-white dark:bg-white/15 dark:text-white">
           {badge}
@@ -37,7 +39,19 @@ function NavItem({ to, icon: Icon, children, badge }) {
 }
 
 export default function Navbar() {
-  const { currentUser, logout, cartCount, theme, toggleTheme } = useApp();
+  const { currentUser, logout, cartCount, theme, toggleTheme, invoice } =
+    useApp();
+
+  const isAdminView =
+    currentUser && ["admin", "vendedor"].includes(currentUser.role);
+
+  const roleLabel = currentUser
+    ? currentUser.role === "admin"
+      ? "Administrador"
+      : currentUser.role === "vendedor"
+        ? "Vendedor"
+        : "Cliente"
+    : "Invitado";
 
   return (
     <header className="sticky top-0 z-40 px-4 pt-4 sm:px-6 lg:px-8">
@@ -49,7 +63,8 @@ export default function Navbar() {
               Bellas Boutique
             </h1>
             <p className="mt-1 text-sm text-[color:var(--bb-text-soft)]">
-              Moda contemporánea con una experiencia más limpia, elegante y coherente.
+              Sistema web con vista de cliente y administración para catálogo,
+              compras, soporte y control interno.
             </p>
           </div>
 
@@ -58,29 +73,45 @@ export default function Navbar() {
               <NavItem to="/" icon={Home}>
                 Inicio
               </NavItem>
+
               <NavItem to="/support" icon={HelpCircle}>
                 Soporte
               </NavItem>
-              <NavItem to="/cart" icon={ShoppingBag} badge={cartCount || undefined}>
-                Carrito
-              </NavItem>
+
+              {!isAdminView && (
+                <NavItem
+                  to="/cart"
+                  icon={ShoppingBag}
+                  badge={cartCount || undefined}
+                >
+                  Carrito
+                </NavItem>
+              )}
+
+              {invoice && currentUser?.role === "cliente" && (
+                <NavItem to="/invoice" icon={Receipt}>
+                  Factura
+                </NavItem>
+              )}
 
               {!currentUser ? (
                 <>
                   <NavItem to="/login" icon={LogIn}>
                     Ingresar
                   </NavItem>
+
                   <NavItem to="/register" icon={UserPlus}>
                     Crear cuenta
                   </NavItem>
                 </>
               ) : (
                 <>
-                  {currentUser.role === "admin" && (
+                  {isAdminView && (
                     <NavItem to="/admin" icon={LayoutDashboard}>
-                      Admin
+                      Panel
                     </NavItem>
                   )}
+
                   <button onClick={logout} className="btn-secondary">
                     <LogOut className="h-4 w-4" />
                     Salir
@@ -92,11 +123,14 @@ export default function Navbar() {
             <div className="flex items-center justify-between gap-3 lg:justify-end">
               <div className="badge-soft">
                 {currentUser
-                  ? `Sesión: ${currentUser.fullName}`
-                  : "Invitado"}
+                  ? `${currentUser.fullName} · ${roleLabel}`
+                  : "Invitado · sin sesión"}
               </div>
 
-              <button onClick={toggleTheme} className="btn-secondary px-4 py-2.5">
+              <button
+                onClick={toggleTheme}
+                className="btn-secondary px-4 py-2.5"
+              >
                 {theme === "dark" ? (
                   <>
                     <Sun className="h-4 w-4" />

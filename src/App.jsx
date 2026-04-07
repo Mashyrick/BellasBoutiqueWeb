@@ -15,8 +15,40 @@ import SupportPage from "./pages/SupportPage";
 function ProtectedAdminRoute({ children }) {
   const { currentUser } = useApp();
 
-  if (!currentUser || currentUser.role !== "admin") {
+  if (!currentUser) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (!["admin", "vendedor"].includes(currentUser.role)) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+}
+
+function ProtectedClientRoute({ children }) {
+  const { currentUser } = useApp();
+
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (currentUser.role !== "cliente") {
+    return <Navigate to="/admin" replace />;
+  }
+
+  return children;
+}
+
+function ProtectedInvoiceRoute({ children }) {
+  const { currentUser, invoice } = useApp();
+
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!invoice) {
+    return <Navigate to="/" replace />;
   }
 
   return children;
@@ -36,10 +68,35 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/invoice" element={<InvoicePage />} />
             <Route path="/support" element={<SupportPage />} />
+
+            <Route
+              path="/cart"
+              element={
+                <ProtectedClientRoute>
+                  <CartPage />
+                </ProtectedClientRoute>
+              }
+            />
+
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedClientRoute>
+                  <CheckoutPage />
+                </ProtectedClientRoute>
+              }
+            />
+
+            <Route
+              path="/invoice"
+              element={
+                <ProtectedInvoiceRoute>
+                  <InvoicePage />
+                </ProtectedInvoiceRoute>
+              }
+            />
+
             <Route
               path="/admin"
               element={
@@ -48,6 +105,8 @@ export default function App() {
                 </ProtectedAdminRoute>
               }
             />
+
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
       </div>

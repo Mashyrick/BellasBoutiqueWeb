@@ -1,121 +1,134 @@
-import { ArrowRight, ShieldCheck, Sparkles, Truck } from "lucide-react";
+import { ArrowRight, ShieldCheck, ShoppingBag, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useApp } from "../context/AppContext";
-import { heroHighlights } from "../data/stats";
-
-const editorialStats = [
-  { label: "Curaduría", value: "Premium" },
-  { label: "Entrega", value: "Costa Rica" },
-  { label: "Experiencia", value: "Boutique" },
-];
-
-const serviceNotes = [
-  { icon: Sparkles, text: "Selección visual limpia y editorial" },
-  { icon: Truck, text: "Proceso de compra simple y directo" },
-  { icon: ShieldCheck, text: "Acceso demo para cliente y admin" },
-];
 
 export default function Hero() {
-  const { currentUser } = useApp();
+  const { currentUser, products, inventorySummary } = useApp();
+
+  const isAdminView =
+    currentUser && ["admin", "vendedor"].includes(currentUser.role);
 
   return (
-    <section className="page-section mb-10">
-      <div className="relative overflow-hidden rounded-[2.4rem] border border-[rgba(118,92,76,0.14)] bg-[linear-gradient(135deg,rgba(255,250,246,0.82)_0%,rgba(248,240,235,0.8)_48%,rgba(236,226,220,0.72)_100%)] p-6 shadow-[0_30px_70px_rgba(32,26,24,0.1)] backdrop-blur-2xl dark:bg-[linear-gradient(135deg,rgba(44,36,42,0.9)_0%,rgba(34,28,34,0.94)_52%,rgba(27,22,28,0.96)_100%)] md:p-8 lg:p-10">
-        <div className="absolute right-[-5rem] top-[-6rem] h-56 w-56 rounded-full bg-[rgba(214,188,173,0.32)] blur-3xl dark:bg-[rgba(222,193,178,0.16)]" />
-        <div className="absolute bottom-[-4rem] left-[16%] h-48 w-48 rounded-full bg-[rgba(255,255,255,0.45)] blur-3xl dark:bg-[rgba(255,255,255,0.08)]" />
+    <section className="hero-grid">
+      <div className="hero-card">
+        <div className="space-y-6">
+          <span className="hero-badge">
+            <Sparkles className="h-4 w-4" />
+            Experiencia UI moderna
+          </span>
 
-        <div className="relative z-10 grid gap-8 xl:grid-cols-[1.25fr_0.75fr] xl:gap-10">
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <span className="inline-flex rounded-full border border-[rgba(118,92,76,0.16)] bg-white/55 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#7f675c] dark:bg-white/[0.04] dark:text-[#ceb8ad]">
-                Nueva colección · Bellas Boutique
-              </span>
+          <div className="space-y-4">
+            <h2 className="max-w-3xl text-4xl font-semibold tracking-tight text-[color:var(--bb-text)] sm:text-5xl lg:text-6xl">
+              Bellas Boutique, una tienda online con vista de cliente y
+              administración.
+            </h2>
 
-              <div className="max-w-4xl space-y-4">
-                <h2 className="max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight text-[color:var(--bb-text)] sm:text-5xl lg:text-6xl">
-                  Moda femenina con presencia boutique, composición editorial y
-                  compra clara.
-                </h2>
-                <p className="max-w-2xl text-sm leading-7 text-[color:var(--bb-text-soft)] sm:text-base">
-                  Descubre nuestra nueva colección diseñada para destacar en
-                  cada detalle.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <a href="#catalogo" className="btn-primary">
-                Explorar catálogo
-                <ArrowRight className="h-4 w-4" />
-              </a>
-
-              {!currentUser && (
-                <Link to="/login" className="btn-secondary">
-                  Iniciar sesión
-                </Link>
-              )}
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              {editorialStats.map((item) => (
-                <div key={item.label} className="surface-muted px-4 py-4">
-                  <p className="text-xs uppercase tracking-[0.24em] text-[color:var(--bb-text-soft)]">
-                    {item.label}
-                  </p>
-                  <p className="mt-2 text-xl font-semibold text-[color:var(--bb-text)]">
-                    {item.value}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <p className="max-w-2xl text-base leading-7 text-[color:var(--bb-text-soft)] sm:text-lg">
+              Explora el catálogo, gestiona productos, procesa compras, genera
+              facturas y da seguimiento a soporte desde una experiencia visual
+              coherente, moderna y funcional.
+            </p>
           </div>
 
-          <div className="grid gap-4">
-            <div className="card p-5">
-              <p className="eyebrow">Acceso demo</p>
-              <div className="mt-4 space-y-3 text-sm text-[color:var(--bb-text-soft)]">
-                <p>
-                  <span className="font-semibold text-[color:var(--bb-text)]">
-                    Admin:
-                  </span>{" "}
-                  admin@bellasboutique.com / Admin123!
-                </p>
-                <p>
-                  <span className="font-semibold text-[color:var(--bb-text)]">
-                    Cliente:
-                  </span>{" "}
-                  cliente@bellasboutique.com / Cliente123!
-                </p>
-              </div>
+          <div className="flex flex-wrap gap-3">
+            {currentUser ? (
+              isAdminView ? (
+                <Link to="/admin" className="btn-primary">
+                  Ir al panel administrativo
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              ) : (
+                <Link to="/cart" className="btn-primary">
+                  Ver carrito
+                  <ShoppingBag className="h-4 w-4" />
+                </Link>
+              )
+            ) : (
+              <>
+                <Link to="/login" className="btn-primary">
+                  Iniciar sesión
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+
+                <Link to="/register" className="btn-secondary">
+                  Crear cuenta
+                </Link>
+              </>
+            )}
+
+            <a href="#catalogo" className="btn-secondary">
+              Ver catálogo
+            </a>
+          </div>
+
+          <div className="grid gap-4 pt-2 sm:grid-cols-3">
+            <div className="surface-muted p-4">
+              <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--bb-text-soft)]">
+                Productos
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-[color:var(--bb-text)]">
+                {products.length}
+              </p>
             </div>
 
-            <div className="card p-5">
-              <p className="eyebrow">Valor de la experiencia</p>
-              <ul className="mt-4 space-y-3">
-                {serviceNotes.map(({ icon: Icon, text }) => (
-                  <li
-                    key={text}
-                    className="flex items-start gap-3 text-sm text-[color:var(--bb-text-soft)]"
-                  >
-                    <span className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-[rgba(42,29,28,0.08)] text-[color:var(--bb-text)] dark:bg-white/[0.05]">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <span>{text}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="surface-muted p-4">
+              <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--bb-text-soft)]">
+                Stock bajo
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-[color:var(--bb-text)]">
+                {inventorySummary.lowStock}
+              </p>
             </div>
 
-            <div className="card p-5">
-              <p className="eyebrow">Incluye</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {heroHighlights.map((item) => (
-                  <span key={item} className="badge-soft">
-                    {item}
-                  </span>
-                ))}
-              </div>
+            <div className="surface-muted p-4">
+              <p className="text-xs uppercase tracking-[0.22em] text-[color:var(--bb-text-soft)]">
+                Acceso
+              </p>
+              <p className="mt-2 text-base font-semibold text-[color:var(--bb-text)]">
+                {currentUser
+                  ? `${currentUser.fullName} · ${currentUser.role}`
+                  : "Invitado"}
+              </p>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="hero-side-card">
+        <div className="space-y-5">
+          <div className="rounded-3xl border border-[rgba(118,92,76,0.14)] bg-white/55 p-5 dark:bg-white/[0.03]">
+            <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(42,29,28,0.92)] text-white">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+
+            <h3 className="text-lg font-semibold text-[color:var(--bb-text)]">
+              Requerimientos académicos cubiertos
+            </h3>
+
+            <ul className="mt-3 space-y-2 text-sm leading-6 text-[color:var(--bb-text-soft)]">
+              <li>• Login y registro de usuarios</li>
+              <li>• Catálogo con filtros y stock</li>
+              <li>• Carrito, pagos y factura digital</li>
+              <li>• Soporte, encuestas y chat</li>
+              <li>• Panel administrativo y reportes</li>
+            </ul>
+          </div>
+
+          <div className="rounded-3xl border border-[rgba(118,92,76,0.14)] bg-[rgba(42,29,28,0.92)] p-5 text-white shadow-[0_22px_50px_rgba(32,26,24,0.18)]">
+            <p className="text-xs uppercase tracking-[0.22em] text-white/70">
+              Estado del sistema
+            </p>
+
+            <p className="mt-3 text-lg font-semibold">
+              {currentUser
+                ? "Sesión activa y lista para operar"
+                : "Puedes navegar el catálogo y luego iniciar sesión"}
+            </p>
+
+            <p className="mt-2 text-sm leading-6 text-white/80">
+              Esta versión integra una lógica frontend simulada para demostrar
+              seguridad, trazabilidad, soporte, compras y administración.
+            </p>
           </div>
         </div>
       </div>
